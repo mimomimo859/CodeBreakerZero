@@ -3,7 +3,7 @@ package net.sougetu.first;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+import java.util.*;
 
 /**
  * CodeBreakerZero<br>
@@ -43,6 +43,11 @@ public class CodeBreakerFirst {
         
         
         //タイトルとルールの表示
+        /*
+          バッファリング処理とは、書き込み時であればデータを
+          一旦メモリー（バッファ）に蓄積し、いっぱいになった
+          ところでファイルに出力すること
+        */
         BufferedReader br
             = new BufferedReader(new
             InputStreamReader(System.in));
@@ -52,6 +57,7 @@ public class CodeBreakerFirst {
         
         //ランダムな答えを作成。
         //ただし、仕様通り、同じ数字がないようにする。
+        //文字列長を取得するlengthメソッド
         for (int i = 0; i < answer.length; i++) {
             //自分より前の要素にかぶるやつがないか確かめる。
             //あったらもう１回random
@@ -60,11 +66,12 @@ public class CodeBreakerFirst {
             do {
                 flag = false;
                 for (int j = i - 1; j>= 0; j--) {
-                    flag = true;
-                    answer[i] = (int) (Math.random() * 6 + 1);
+                    if (answer[i] == answer[j]) {
+                      flag = true;
+                      answer[i] = (int) (Math.random() * 6 + 1);
+                    }
                 }
-            }
-        } while (flag == true);
+            } while (flag == true);
     }//入力させる。数値のチェックを行う。
     
     
@@ -80,26 +87,36 @@ public class CodeBreakerFirst {
             } catch (NumberFormatException e) {
                 System.err.println("数値を入力してください");
                 i--;
+            } catch (IOException e) {
+                System.err.println("もう一度入力してください");
+                i--;
             }
         }
         //答え判断
         hit = 0;
         blow = 0;
         for (int i = 0; i < answer.length; i++) {
-            if (i == j && input[i] == answer[j]) {
-                hit++;
+            for (int j = 0; j < answer.length; j++) {
+                if (i == j && input[i] == answer[j]) {
+                    hit++;
+                } else if (input[i] == answer[j]) {
+                    blow++;
+                }
             }
-        } else if (input[i] == answer[j]) {
-            blow++;
+        }
+    
+
+
+         //終了判断　ヒットが3つになったら終了
+         System.out.println("ヒット" + hit + "ブロー" + blow);
+            if (hit == 3) {
+               System.out.println("おめでとう");
+               break;
+            }
+            else {
+               System.out.println();
+            }
         }
     }
 }
 
-//終了判断　ヒットが3つになったら終了
-System.out.println("" + hit + "" + blow);
-if (hit == 3) {
-    System.out.println("おめでとう");
-    break;
-} else {
-    System.out.println();
-}
